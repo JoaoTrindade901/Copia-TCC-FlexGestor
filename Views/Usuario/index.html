@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuários - FlexGestor</title>
+    <link rel="stylesheet" href="/WebApplication5/wwwroot/css/homeCSS/home.css">
+    <link rel="stylesheet" href="/WebApplication5/wwwroot/css/menuCSS/menu.css">
+    <link rel="stylesheet" href="/WebApplication5/wwwroot/css/usuarioCSS/usuario.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <div class="container">
+         <header class="cabecalho">
+            <h1>FlexGestor</h1>
+            <a href="/WebApplication5/Views/Login/index.html" class="sair">Sair</a>
+        </header>
+
+        <nav class="sidebar">
+            <ul>
+                <li><a href="/WebApplication5/Views/Usuario/index.html" target="_self">Usuário</a></li>
+                <li><a href="#" target="_self">Clientes</a></li>
+                <li><a href="#" target="_self">Produtos</a></li>
+                <li><a href="#" target="_self">Estoque</a></li>
+                <li class="menu-relatorios">
+                    <span>Análise Gerencial</span>
+                    <ul class="submenu">
+                        <li><a href="#" target="_self">Relatório 1</a></li>
+                        <li><a href="#" target="_self">Relatório 2</a></li>
+                        <li><a href="#" target="_self">Relatório 3</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <main>
+            <section class="secao-usuarios">
+                <div class="cabecalho-tela">
+                    <h2>Gerenciamento de Usuários</h2>
+                    <button class="btn-novo-usuario" onclick="abrirModal()">
+                        <i class="bi bi-person-plus-fill"></i> Novo Usuário
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <div class="area-filtro">
+                        <select id="select-tipo-filtro" class="select-filtro">
+                            <option value="nome">Nome</option>
+                            <option value="documento">CPF</option>
+                        </select>
+                        <input type="text" id="input-termo-busca" class="input-filtro" placeholder="Filtrar..." onkeyup="filtrarTabela()">
+                    </div>
+
+                    <table class="table-usuarios" id="tabela-usuarios">
+                        <thead>
+                            <tr>
+                                <th>Ações</th>
+                                <th>Status</th>
+                                <th>C.P.F.</th>
+                                <th>Nome</th>
+                                <th>Login</th>
+                                <th>Telefone</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-nome="João Silva" data-cpf="12345678901">
+                                <td class="area-acoes">
+                                    <button class="btn-acao btn-editar" title="Editar"><i class="bi bi-pencil-fill"></i></button>
+                                    <button class="btn-acao btn-inativar" title="Inativar"><i class="bi bi-trash3-fill"></i></button>
+                                </td>
+                                <td><span class="status-pill status-ativo">Ativo</span></td>
+                                <td>123.456.789-01</td>
+                                <td>João Silva</td>
+                                <td>joao.silva</td>
+                                <td>(44) 99999-0001</td>
+                                <td>joao@flexgestor.com</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal" id="modal-novo-usuario">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cadastrar Novo Usuário</h3>
+                <button class="btn-fechar-modal" onclick="fecharModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-usuario">
+                    <div class="form-group">
+                        <label for="modal-nome">Nome Completo</label>
+                        <input type="text" id="modal-nome" placeholder="Nome do usuário" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-cpf">C.P.F.</label>
+                        <input type="text" id="modal-cpf" placeholder="000.000.000-00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-login">Login</label>
+                        <input type="text" id="modal-login" placeholder="Ex: joao.silva" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-email">Email</label>
+                        <input type="email" id="modal-email" placeholder="usuario@flexgestor.com" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secundario" onclick="fecharModal()">Cancelar</button>
+                        <button type="submit" class="btn-primario">Salvar Cadastro</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/WebApplication5/wwwroot/js/menuJS/menu.js"></script>
+    <script src="/WebApplication5/wwwroot/js/usuarioJS/usuario.js"></script>
+</body>
+</html>

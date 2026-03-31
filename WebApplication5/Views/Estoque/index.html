@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estoque - FlexGestor</title>
+    <link rel="stylesheet" href="/WebApplication5/wwwroot/css/homeCSS/home.css">
+    <link rel="stylesheet" href="/WebApplication5/wwwroot/css/menuCSS/menu.css">
+    <link rel="stylesheet" href="/WebApplication5/wwwroot/css/estoqueCSS/estoque.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+<div class="container">
+    <div id="menu"></div>
+
+    <main>
+        <section class="secao-estoque">
+
+            <div class="cabecalho-tela">
+                <h2>Gerenciamento de Estoque</h2>
+                <button class="btn-novo-estoque" onclick="abrirModal()">
+                    <i class="bi bi-plus-circle-fill"></i> Novo Item
+                </button>
+            </div>
+
+            <div class="table-container">
+                <div class="area-filtro">
+                    <input type="text" id="input-termo-busca" class="input-filtro"
+                           placeholder="Buscar por produto ou local..." oninput="filtrarTabela()">
+                    <div class="filtro-status">
+                        <button id="btn-filtro-todos"   class="btn-status-filtro" onclick="setFiltroStatus('todos')">Todos</button>
+                        <button id="btn-filtro-critico" class="btn-status-filtro" onclick="setFiltroStatus('critico')">Crítico</button>
+                        <button id="btn-filtro-normal"  class="btn-status-filtro" onclick="setFiltroStatus('normal')">Normal</button>
+                    </div>
+                </div>
+
+                <table class="table-estoque" id="tabela-estoque">
+                    <thead>
+                        <tr>
+                            <th>Ações</th>
+                            <th>Status</th>
+                            <th>Produto</th>
+                            <th>Qtde Atual</th>
+                            <th>Est. Mín</th>
+                            <th>Est. Máx</th>
+                            <th>Local</th>
+                            <th>Atualização</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <div class="paginacao">
+                    <span class="paginacao-info"></span>
+                    <div class="paginacao-controles"></div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+</div>
+
+<!-- ════════════════════════════════════════
+     MODAL: NOVO ITEM
+════════════════════════════════════════ -->
+<div class="modal" id="modal-novo-estoque">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="bi bi-plus-circle-fill"></i> Novo Item de Estoque</h3>
+            <button class="btn-fechar-modal" onclick="fecharModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="form-estoque">
+
+                <p class="form-secao">Produto</p>
+                <div class="form-grid">
+                    <div class="form-group form-col-2">
+                        <label>Produto <span class="obrigatorio">*</span></label>
+                        <select id="novo-produto" required></select>
+                    </div>
+                </div>
+
+                <p class="form-secao">Quantidades</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Qtde Atual <span class="obrigatorio">*</span></label>
+                        <input type="number" id="novo-qtde" min="0" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estoque Mínimo <span class="obrigatorio">*</span></label>
+                        <input type="number" id="novo-min" min="0" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estoque Máximo <span class="obrigatorio">*</span></label>
+                        <input type="number" id="novo-max" min="0" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Local <span class="obrigatorio">*</span></label>
+                        <input type="text" id="novo-local" placeholder="Ex: Prateleira A1" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secundario" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="btn-primario"><i class="bi bi-check-lg"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     MODAL: EDIÇÃO
+════════════════════════════════════════ -->
+<div class="modal" id="modal-edicao">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="bi bi-pencil-fill"></i> Editar Item de Estoque</h3>
+            <button class="btn-fechar-modal" onclick="fecharModalEdicao()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="form-edicao">
+
+                <p class="form-secao">Produto</p>
+                <div class="form-grid">
+                    <div class="form-group form-col-2">
+                        <label>Produto <span class="obrigatorio">*</span></label>
+                        <select id="edit-produto" required></select>
+                    </div>
+                </div>
+
+                <p class="form-secao">Quantidades</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Qtde Atual <span class="obrigatorio">*</span></label>
+                        <input type="number" id="edit-qtde" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estoque Mínimo <span class="obrigatorio">*</span></label>
+                        <input type="number" id="edit-min" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estoque Máximo <span class="obrigatorio">*</span></label>
+                        <input type="number" id="edit-max" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Local <span class="obrigatorio">*</span></label>
+                        <input type="text" id="edit-local" required>
+                    </div>
+                    <div class="form-group form-col-2">
+                        <label>Última Atualização</label>
+                        <input type="date" id="edit-atualizacao" readonly>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secundario" onclick="fecharModalEdicao()">Cancelar</button>
+                    <button type="submit" class="btn-primario"><i class="bi bi-check-lg"></i> Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     MODAL: CONFIRMAÇÃO
+════════════════════════════════════════ -->
+<div class="modal" id="modal-confirmar">
+    <div class="modal-content" style="width:42rem">
+        <div class="modal-header">
+            <h3><i class="bi bi-exclamation-triangle-fill" style="color:#ef4444"></i> Confirmação</h3>
+            <button class="btn-fechar-modal" onclick="fecharModalConfirmar()">&times;</button>
+        </div>
+        <div class="confirm-body">
+            <div class="confirm-icone">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <p id="confirm-mensagem">Deseja inativar este item?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secundario" onclick="fecharModalConfirmar()">Não, cancelar</button>
+            <button type="button" class="btn-perigo" id="confirm-btn-sim">Sim, inativar</button>
+        </div>
+    </div>
+</div>
+
+<script src="/WebApplication5/wwwroot/js/menuJS/menu.js"></script>
+<script src="/WebApplication5/wwwroot/js/estoqueJS/estoque.js"></script>
+</body>
+</html>

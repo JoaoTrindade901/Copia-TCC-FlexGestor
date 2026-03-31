@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuários - FlexGestor</title>
+    <link rel="stylesheet" href="/WebApplication5/wwwroot/css/homeCSS/home.css">
+    <link rel="stylesheet" href="/WebApplication5/wwwroot/css/menuCSS/menu.css">
+    <link rel="stylesheet" href="/WebApplication5/wwwroot/css/usuarioCSS/usuario.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+<div class="container">
+    <div id="menu"></div>
+
+    <main>
+        <section class="secao-usuarios">
+
+            <div class="cabecalho-tela">
+                <h2>Gerenciamento de Usuários</h2>
+                <button class="btn-novo-usuario" onclick="abrirModal()">
+                    <i class="bi bi-person-plus-fill"></i> Novo Usuário
+                </button>
+            </div>
+
+            <div class="table-container">
+
+                <!-- FILTROS -->
+                <div class="area-filtro">
+                    <select id="select-tipo-filtro" class="select-filtro" onchange="filtrarTabela()">
+                        <option value="nome">Nome</option>
+                        <option value="documento">CPF</option>
+                    </select>
+                    <input type="text" id="input-termo-busca" class="input-filtro"
+                           placeholder="Filtrar..." oninput="filtrarTabela()">
+
+                    <!-- Filtro de status -->
+                    <div class="filtro-status">
+                        <button id="btn-filtro-todos"   class="btn-status-filtro" onclick="setFiltroStatus('todos')">Todos</button>
+                        <button id="btn-filtro-ativo"   class="btn-status-filtro" onclick="setFiltroStatus('ativo')">Ativos</button>
+                        <button id="btn-filtro-inativo" class="btn-status-filtro" onclick="setFiltroStatus('inativo')">Inativos</button>
+                    </div>
+                </div>
+
+                <!-- TABELA -->
+                <table class="table-usuarios" id="tabela-usuarios">
+                    <thead>
+                        <tr>
+                            <th>Ações</th>
+                            <th>Status</th>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>Login</th>
+                            <th>Email</th>
+                            <th>Telefone</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <!-- PAGINAÇÃO -->
+                <div class="paginacao">
+                    <span class="paginacao-info"></span>
+                    <div class="paginacao-controles"></div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+</div>
+
+<!--
+     MODAL: NOVO USUÁRIO
+-->
+<div class="modal" id="modal-novo-usuario">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h3><i class="bi bi-person-plus-fill"></i> Novo Usuário</h3>
+            <button class="btn-fechar-modal" onclick="fecharModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="form-usuario">
+
+                <p class="form-secao">Acesso</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Login <span class="obrigatorio">*</span></label>
+                        <input type="text" id="novo-login" placeholder="ex: joao.silva" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha <span class="obrigatorio">*</span></label>
+                        <input type="password" id="novo-senha" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Perfil</label>
+                        <select id="novo-perfil">
+                            <option value="1">Administrador</option>
+                            <option value="2">Operador</option>
+                            <option value="3">Gerente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <p class="form-secao">Dados Pessoais</p>
+                <div class="form-grid">
+                    <div class="form-group form-col-2">
+                        <label>Nome Completo <span class="obrigatorio">*</span></label>
+                        <input type="text" id="novo-nome" placeholder="Nome completo" required>
+                    </div>
+                    <div class="form-group form-col-2">
+                        <label>Email <span class="obrigatorio">*</span></label>
+                        <input type="email" id="novo-email" placeholder="usuario@flexgestor.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" id="novo-cpf" placeholder="000.000.000-00">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="text" id="novo-telefone" placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label>Gênero</label>
+                        <select id="novo-genero">
+                            <option value="">Selecione</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
+                            <option value="O">Outro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Nascimento</label>
+                        <input type="date" id="novo-nascimento">
+                    </div>
+                </div>
+
+                <p class="form-secao">Vínculo</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Salário (R$)</label>
+                        <input type="number" id="novo-salario" placeholder="0,00" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Admissão</label>
+                        <input type="date" id="novo-admissao">
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Demissão</label>
+                        <input type="date" id="novo-demissao">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secundario" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="btn-primario"><i class="bi bi-check-lg"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 
+     MODAL: EDIÇÃO
+ -->
+<div class="modal" id="modal-edicao">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h3><i class="bi bi-pencil-fill"></i> Editar Usuário</h3>
+            <button class="btn-fechar-modal" onclick="fecharModalEdicao()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="form-edicao">
+
+                <p class="form-secao">Acesso</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Login <span class="obrigatorio">*</span></label>
+                        <input type="text" id="edit-login" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Perfil</label>
+                        <select id="edit-perfil">
+                            <option value="1">Administrador</option>
+                            <option value="2">Operador</option>
+                            <option value="3">Gerente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Criação</label>
+                        <input type="text" id="edit-criacao" readonly>
+                    </div>
+                </div>
+
+                <p class="form-secao">Dados Pessoais</p>
+                <div class="form-grid">
+                    <div class="form-group form-col-2">
+                        <label>Nome Completo <span class="obrigatorio">*</span></label>
+                        <input type="text" id="edit-nome" required>
+                    </div>
+                    <div class="form-group form-col-2">
+                        <label>Email <span class="obrigatorio">*</span></label>
+                        <input type="email" id="edit-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" id="edit-cpf">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="text" id="edit-telefone">
+                    </div>
+                    <div class="form-group">
+                        <label>Gênero</label>
+                        <select id="edit-genero">
+                            <option value="">Selecione</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
+                            <option value="O">Outro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Nascimento</label>
+                        <input type="date" id="edit-nascimento">
+                    </div>
+                </div>
+
+                <p class="form-secao">Vínculo</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Salário (R$)</label>
+                        <input type="number" id="edit-salario" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Admissão</label>
+                        <input type="date" id="edit-admissao">
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Demissão</label>
+                        <input type="date" id="edit-demissao">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secundario" onclick="fecharModalEdicao()">Cancelar</button>
+                    <button type="submit" class="btn-primario"><i class="bi bi-check-lg"></i> Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 
+     MODAL: CONFIRMAÇÃO INATIVAÇÃO
+ -->
+<div class="modal" id="modal-confirmar">
+    <div class="modal-content" style="width:420px">
+        <div class="modal-header">
+            <h3><i class="bi bi-exclamation-triangle-fill" style="color:#ef4444"></i> Confirmação</h3>
+            <button class="btn-fechar-modal" onclick="fecharModalConfirmar()">&times;</button>
+        </div>
+        <div class="confirm-body">
+            <div class="confirm-icone">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <p id="confirm-mensagem">Deseja inativar este usuário?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secundario" onclick="fecharModalConfirmar()">Não, cancelar</button>
+            <button type="button" class="btn-perigo" id="confirm-btn-sim">Sim, inativar</button>
+        </div>
+    </div>
+</div>
+
+<script src="/WebApplication5/wwwroot/js/menuJS/menu.js"></script>
+<script src="/WebApplication5/wwwroot/js/usuarioJS/usuario.js"></script>
+</body>
+</html>
